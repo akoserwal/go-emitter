@@ -1,0 +1,11 @@
+{
+  "packageName": "main",
+  "imports": [],
+  "generateValidation": false,
+  "generateBuilders": false,
+  "generateJSON": false,
+  "generateHTTPClient": false,
+  "generateTests": false,
+  "generateDocs": false,
+  "lintGo": false
+}

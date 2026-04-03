@@ -1,0 +1,25 @@
+# Build outputs
+dist/
+tmp/
+node_modules/
+
+# Generated files
+*.go
+*_test.go
+*_README.md
+test-*.tsp
+benchmark_*.tsp
+
+# TypeSpec files
+*.tsp
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lock files
+package-lock.json
+yarn.lock

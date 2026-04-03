@@ -1,0 +1,11 @@
+{
+  "packageName": "client",
+  "imports": ["fmt", "encoding/json", "net/http", "context", "bytes"],
+  "generateValidation": true,
+  "generateBuilders": false,
+  "generateJSON": true,
+  "generateHTTPClient": true,
+  "generateTests": true,
+  "generateDocs": true,
+  "lintGo": true
+}

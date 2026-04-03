@@ -1,0 +1,11 @@
+{
+  "packageName": "models",
+  "imports": ["fmt", "encoding/json"],
+  "generateValidation": true,
+  "generateBuilders": true,
+  "generateJSON": true,
+  "generateHTTPClient": false,
+  "generateTests": true,
+  "generateDocs": true,
+  "lintGo": false
+}

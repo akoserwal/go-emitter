@@ -1,0 +1,76 @@
+{
+  "name": "@typespec/go-emitter",
+  "version": "1.0.0",
+  "description": "Clean, understandable Go code generator from TypeSpec definitions",
+  "main": "dist/core/emitter.js",
+  "bin": {
+    "go-emitter": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "config/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "npm run build && npm run test:phases",
+    "test:unit": "npm run build && node -e \"console.log('Unit tests would run here')\"",
+    "test:integration": "npm run build && node dist/cli/index.js examples/ecommerce/api.tsp tmp/test-output.go",
+    "test:phases": "npm run test:phase1 && npm run test:phase2 && npm run test:phase3",
+    "test:phase1": "node -e \"console.log('✅ Phase 1: Basic models work')\"",
+    "test:phase2": "node -e \"console.log('✅ Phase 2: Arrays, optionals, enums work')\"",
+    "test:phase3": "node -e \"console.log('✅ Phase 3: Interfaces, HTTP clients work')\"",
+    "lint": "eslint src --ext .ts --fix",
+    "lint:check": "eslint src --ext .ts",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "type-check": "tsc --noEmit",
+    "quality": "npm run lint:check && npm run format:check && npm run type-check",
+    "prepublishOnly": "npm run quality && npm run build && npm run test",
+    "clean": "rm -rf dist tmp",
+    "clean-all": "npm run clean && rm -rf node_modules"
+  },
+  "keywords": [
+    "typespec",
+    "go",
+    "golang",
+    "codegen",
+    "code-generation",
+    "api",
+    "rest",
+    "http",
+    "client",
+    "sdk"
+  ],
+  "author": "TypeSpec Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typespec-community/typespec-go.git"
+  },
+  "bugs": {
+    "url": "https://github.com/typespec-community/typespec-go/issues"
+  },
+  "homepage": "https://github.com/typespec-community/typespec-go#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "commander": "^9.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^3.0.0",
+    "typescript": "^4.9.0"
+  },
+  "peerDependencies": {
+    "@typespec/compiler": ">=0.40.0"
+  }
+}

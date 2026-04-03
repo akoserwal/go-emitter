@@ -1,0 +1,14 @@
+*.tsp
+*.go
+*_test.go
+*_README.md
+test-*
+config.json
+.claude/
+examples/
+.git/
+.DS_Store
+node_modules/
+*.log
+*.tmp
+tsconfig.json

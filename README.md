@@ -1,6 +1,6 @@
 # TypeSpec Go Emitter
 
-[![npm version](https://badge.fury.io/js/@typespec%2Fgo-emitter.svg)](https://www.npmjs.com/package/@typespec/go-emitter)
+[![npm version](https://badge.fury.io/js/@akoserwal/go-emitter.svg)](https://www.npmjs.com/package/@akoserwal/go-emitter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Go code generator for TypeSpec definitions.
@@ -8,7 +8,7 @@ A Go code generator for TypeSpec definitions.
 ## 📦 Installation
 
 ```bash
-npm install -g @typespec/go-emitter
+npm install -g @akoserwal/go-emitter
 ```
 
 ## 🚀 Quick Start

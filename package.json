@@ -1,5 +1,5 @@
 {
-  "name": "@typespec/go-emitter",
+  "name": "@akoserwal/go-emitter",
   "version": "1.0.0",
   "description": "Clean, understandable Go code generator from TypeSpec definitions",
   "main": "dist/core/emitter.js",

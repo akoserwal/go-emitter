@@ -8,7 +8,7 @@ This directory contains real-world examples demonstrating various features of th
 **Features:** Complex nested models, multiple enums, validation
 ```bash
 cd ecommerce
-npx @typespec/go-emitter api.tsp client.go config.json
+npx @akoserwal/go-emitter api.tsp client.go config.json
 ```
 
 **Demonstrates:**
@@ -21,7 +21,7 @@ npx @typespec/go-emitter api.tsp client.go config.json
 **Features:** Simple CRUD operations, content management
 ```bash
 cd blog-api
-npx @typespec/go-emitter api.tsp client.go
+npx @akoserwal/go-emitter api.tsp client.go
 ```
 
 **Demonstrates:**
@@ -34,7 +34,7 @@ npx @typespec/go-emitter api.tsp client.go
 **Features:** Authentication, role-based permissions
 ```bash
 cd user-management
-npx @typespec/go-emitter api.tsp client.go
+npx @akoserwal/go-emitter api.tsp client.go
 ```
 
 **Demonstrates:**
@@ -47,7 +47,7 @@ npx @typespec/go-emitter api.tsp client.go
 
 1. **Install the emitter**:
    ```bash
-   npm install -g @typespec/go-emitter
+   npm install -g @akoserwal/go-emitter
    ```
 
 2. **Generate Go code**:

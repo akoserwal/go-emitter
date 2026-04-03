@@ -61,6 +61,14 @@ interface UserService {
 }
 ```
 
+**Config (`config.json`):**
+```json
+{
+  "packageName": "client",
+  "generateHTTPClient": true
+}
+```
+
 **Output (`client.go`):**
 ```go
 package client
@@ -81,9 +89,12 @@ const (
 
 func (e Status) String() string {
     switch e {
-    case StatusActive: return "Active"
-    case StatusInactive: return "Inactive"
-    default: return "Unknown"
+    case StatusActive:
+        return "Active"
+    case StatusInactive:
+        return "Inactive"
+    default:
+        return "Unknown"
     }
 }
 
@@ -92,7 +103,6 @@ type UserService interface {
     CreateUser(ctx context.Context, user User) (User, error)
 }
 
-// HTTP client implementation
 type UserServiceClient struct {
     baseURL string
     httpClient *http.Client
@@ -105,7 +115,51 @@ func NewUserServiceClient(baseURL string) *UserServiceClient {
     }
 }
 
-// Real HTTP implementations generated...
+func (c *UserServiceClient) GetUser(ctx context.Context, id int64) (User, error) {
+    var result User
+    url := fmt.Sprintf("%s/getUser", c.baseURL)
+    req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+    if err != nil {
+        return result, err
+    }
+    req.Header.Set("Accept", "application/json")
+
+    resp, err := c.httpClient.Do(req)
+    if err != nil {
+        return result, err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return result, fmt.Errorf("HTTP error: %d", resp.StatusCode)
+    }
+
+    if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+        return result, err
+    }
+    return result, nil
+}
+
+func (c *UserServiceClient) CreateUser(ctx context.Context, user User) (User, error) {
+    var result User
+    // TODO: Implement HTTP POST request to /createUser
+    return result, nil
+}
+
+type User struct {
+    Id int64 `json:"id"`
+    Name string `json:"name"`
+    Email *string `json:"email"`
+    Status Status `json:"status"`
+}
+
+func NewUser(id int64, name string, status Status) *User {
+    return &User{
+        Id: id,
+        Name: name,
+        Status: status,
+    }
+}
 ```
 
 ## ⚙️ Configuration

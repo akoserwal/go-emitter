@@ -69,10 +69,12 @@ function generateHTTPMethod(serviceName: string, method: any, knownEnums: string
 
   let returnType = 'error';
   let returnStmt = 'return nil';
+  let resultDeclaration = '';
   if (method.returnType !== 'void') {
     const goReturnType = mapTypeSpecTypeToGo(method.returnType, knownEnums);
     returnType = `(${goReturnType}, error)`;
     returnStmt = `return result, nil`;
+    resultDeclaration = `\tvar result ${goReturnType}\n`;
   }
 
   const capitalizedName = method.name.charAt(0).toUpperCase() + method.name.slice(1);
@@ -88,11 +90,12 @@ function generateHTTPMethod(serviceName: string, method: any, knownEnums: string
     httpMethod = 'DELETE';
   }
 
-  let httpCode = `\t// TODO: Implement HTTP ${httpMethod} request to ${endpoint}\n\t${returnStmt}`;
+  let httpCode = `${resultDeclaration}\t// TODO: Implement HTTP ${httpMethod} request to ${endpoint}\n\t${returnStmt}`;
 
   // Generate actual HTTP code for common patterns
   if (httpMethod === 'GET' && method.returnType !== 'void') {
-    httpCode = `\turl := fmt.Sprintf("%s${endpoint}", c.baseURL)
+    httpCode = `\tvar result ${mapTypeSpecTypeToGo(method.returnType, knownEnums)}
+\turl := fmt.Sprintf("%s${endpoint}", c.baseURL)
 \treq, err := http.NewRequestWithContext(ctx, "${httpMethod}", url, nil)
 \tif err != nil {
 \t\treturn result, err
@@ -109,7 +112,6 @@ function generateHTTPMethod(serviceName: string, method: any, knownEnums: string
 \t\treturn result, fmt.Errorf("HTTP error: %d", resp.StatusCode)
 \t}
 
-\tvar result ${mapTypeSpecTypeToGo(method.returnType, knownEnums)}
 \tif err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 \t\treturn result, err
 \t}

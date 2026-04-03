@@ -22,6 +22,15 @@ export class TypeSpecGoEmitter {
   async generateFromString(content: string): Promise<GenerationResult> {
     const parsed = parseTypeSpecFile(content);
 
+    // Auto-add required imports for HTTP client generation
+    if (this.config.generateHTTPClient && parsed.interfaces.length > 0) {
+      const requiredImports = ['fmt', 'encoding/json', 'net/http', 'context'];
+      const existingImports = this.config.imports || [];
+      this.config.imports = [...existingImports, ...requiredImports].filter(
+        (imp, index, arr) => arr.indexOf(imp) === index
+      ); // Remove duplicates
+    }
+
     let mainCode = this.generatePackageHeader();
 
     // Get enum names for type resolution
@@ -61,7 +70,7 @@ export class TypeSpecGoEmitter {
   private generatePackageHeader(): string {
     let code = `package ${this.config.packageName}\n\n`;
 
-    if (this.config.imports.length > 0) {
+    if (this.config.imports && this.config.imports.length > 0) {
       if (this.config.imports.length === 1) {
         code += `import "${this.config.imports[0]}"\n\n`;
       } else {

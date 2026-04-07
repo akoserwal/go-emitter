@@ -2,6 +2,42 @@
  * TypeSpec to Go type mapping
  * Simple and transparent - no magic
  */
+
+/**
+ * Convert TypeSpec field names to Go naming conventions
+ * Examples: id -> ID, userId -> UserID, productId -> ProductID
+ */
+export function toGoFieldName(fieldName: string): string {
+  // Handle common ID patterns
+  if (fieldName === 'id') return 'ID';
+  if (fieldName.endsWith('Id')) {
+    const prefix = fieldName.slice(0, -2);
+    return prefix.charAt(0).toUpperCase() + prefix.slice(1) + 'ID';
+  }
+
+  // Handle Go reserved keywords
+  const goKeywords = ['type', 'interface', 'struct', 'func', 'var', 'const', 'package', 'import'];
+  if (goKeywords.includes(fieldName.toLowerCase())) {
+    return fieldName.charAt(0).toUpperCase() + fieldName.slice(1) + 'Field';
+  }
+
+  // Standard field name conversion
+  return fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+}
+
+/**
+ * Convert TypeSpec parameter names to Go naming conventions
+ * Handles reserved keywords differently for parameters
+ */
+export function toGoParamName(paramName: string): string {
+  // Handle Go reserved keywords for parameters
+  const goKeywords = ['type', 'interface', 'struct', 'func', 'var', 'const', 'package', 'import'];
+  if (goKeywords.includes(paramName.toLowerCase())) {
+    return paramName + 'Param';
+  }
+  return paramName;
+}
+
 export function mapTypeSpecTypeToGo(typespecType: string, knownEnums: string[] = []): string {
   // Handle arrays first
   if (typespecType.endsWith('[]')) {
@@ -26,6 +62,8 @@ export function mapTypeSpecTypeToGo(typespecType: string, knownEnums: string[] =
     float32: 'float32',
     float64: 'float64',
     boolean: 'bool',
+    utcDateTime: 'time.Time',
+    bytes: '[]byte',
   };
 
   // Check if it's a known enum or custom type

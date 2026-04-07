@@ -24,11 +24,19 @@ export class TypeSpecGoEmitter {
 
     // Auto-add required imports for HTTP client generation
     if (this.config.generateHTTPClient && parsed.interfaces.length > 0) {
-      const requiredImports = ['fmt', 'encoding/json', 'net/http', 'context'];
+      const requiredImports = ['context', 'encoding/json', 'fmt', 'net/http'];
       const existingImports = this.config.imports || [];
-      this.config.imports = [...existingImports, ...requiredImports].filter(
-        (imp, index, arr) => arr.indexOf(imp) === index
-      ); // Remove duplicates
+      this.config.imports = [...existingImports, ...requiredImports]
+        .filter((imp, index, arr) => arr.indexOf(imp) === index) // Remove duplicates
+        .sort(); // Sort alphabetically for Go conventions
+    }
+
+    // Auto-add time import if utcDateTime is used
+    if (content.includes('utcDateTime')) {
+      const existingImports = this.config.imports || [];
+      this.config.imports = [...existingImports, 'time']
+        .filter((imp, index, arr) => arr.indexOf(imp) === index)
+        .sort();
     }
 
     let mainCode = this.generatePackageHeader();

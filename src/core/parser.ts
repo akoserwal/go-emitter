@@ -38,10 +38,20 @@ function parseEnums(content: string): EnumDef[] {
   while ((match = enumRegex.exec(content)) !== null) {
     const enumName = match[1];
     const enumContent = match[2];
+
+    // Handle both TypeSpec formats:
+    // Simple: Active, Inactive
+    // String values: Active: "active", Inactive: "inactive"
     const values = enumContent
       .split(',')
       .map((v) => v.trim())
-      .filter((v) => v.length > 0);
+      .filter((v) => v.length > 0)
+      .map((v) => {
+        // If it has a colon, extract just the key part
+        const colonIndex = v.indexOf(':');
+        return colonIndex > 0 ? v.substring(0, colonIndex).trim() : v;
+      });
+
     enums.push({ enumName, values });
   }
 

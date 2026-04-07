@@ -1,8 +1,10 @@
 import { EnumDef } from '../types';
 
 export function generateGoEnum(enumDef: EnumDef): string {
-  return `type ${enumDef.enumName} int
+  return `// ${enumDef.enumName} represents the possible values for ${enumDef.enumName.toLowerCase()}
+type ${enumDef.enumName} int
 
+// ${enumDef.enumName} constants
 const (
 ${enumDef.values
   .map((value, index) => {
@@ -12,6 +14,7 @@ ${enumDef.values
   .join('\n')}
 )
 
+// String returns the string representation of ${enumDef.enumName}
 func (e ${enumDef.enumName}) String() string {
 \tswitch e {
 ${enumDef.values

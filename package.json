@@ -1,6 +1,6 @@
 {
   "name": "@akoserwal/go-emitter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Clean, understandable Go code generator from TypeSpec definitions",
   "main": "dist/core/emitter.js",
   "bin": {

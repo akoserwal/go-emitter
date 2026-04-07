@@ -16,7 +16,8 @@ export function generateGoInterface(
 }
 
 function generateInterfaceDeclaration(interfaceDef: InterfaceDef, knownEnums: string[]): string {
-  return `type ${interfaceDef.interfaceName} interface {
+  return `// ${interfaceDef.interfaceName} defines the contract for ${interfaceDef.interfaceName.toLowerCase()} operations
+type ${interfaceDef.interfaceName} interface {
 ${interfaceDef.methods
   .map((method) => {
     const params = method.params
@@ -33,7 +34,8 @@ ${interfaceDef.methods
     }
 
     const capitalizedName = method.name.charAt(0).toUpperCase() + method.name.slice(1);
-    return `\t${capitalizedName}(ctx context.Context, ${params}) ${returnType}`;
+    const paramsWithComma = params ? `, ${params}` : '';
+    return `\t${capitalizedName}(ctx context.Context${paramsWithComma}) ${returnType}`;
   })
   .join('\n')}
 }
@@ -42,11 +44,13 @@ ${interfaceDef.methods
 }
 
 function generateHTTPClient(interfaceDef: InterfaceDef, knownEnums: string[]): string {
-  return `type ${interfaceDef.interfaceName}Client struct {
+  return `// ${interfaceDef.interfaceName}Client implements ${interfaceDef.interfaceName} using HTTP requests
+type ${interfaceDef.interfaceName}Client struct {
 \tbaseURL string
 \thttpClient *http.Client
 }
 
+// New${interfaceDef.interfaceName}Client creates a new HTTP client for ${interfaceDef.interfaceName}
 func New${interfaceDef.interfaceName}Client(baseURL string) *${interfaceDef.interfaceName}Client {
 \treturn &${interfaceDef.interfaceName}Client{
 \t\tbaseURL: baseURL,
@@ -118,7 +122,9 @@ function generateHTTPMethod(serviceName: string, method: any, knownEnums: string
 \treturn result, nil`;
   }
 
-  return `func (c *${serviceName}Client) ${capitalizedName}(ctx context.Context, ${params}) ${returnType} {
+  const paramsWithComma = params ? `, ${params}` : '';
+  return `// ${capitalizedName} ${httpMethod}s ${method.name} via HTTP
+func (c *${serviceName}Client) ${capitalizedName}(ctx context.Context${paramsWithComma}) ${returnType} {
 ${httpCode}
 }`;
 }

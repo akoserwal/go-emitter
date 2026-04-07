@@ -1,5 +1,5 @@
 import { ModelDef, EmitterConfig } from '../types';
-import { mapTypeSpecTypeToGo } from '../core/type-mapper';
+import { mapTypeSpecTypeToGo, toGoFieldName, toGoParamName } from '../core/type-mapper';
 
 export function generateGoStruct(
   model: ModelDef,
@@ -27,15 +27,16 @@ export function generateGoStruct(
 }
 
 function generateStructDeclaration(model: ModelDef, knownEnums: string[]): string {
-  return `type ${model.modelName} struct {
+  return `// ${model.modelName} represents a ${model.modelName.toLowerCase()} entity
+type ${model.modelName} struct {
 ${model.fields
   .map((field) => {
     let goType = mapTypeSpecTypeToGo(field.type, knownEnums);
     if (field.optional) {
       goType = `*${goType}`;
     }
-    const capitalizedName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
-    return `\t${capitalizedName} ${goType} \`json:"${field.name}"\``;
+    const goFieldName = toGoFieldName(field.name);
+    return `\t${goFieldName} ${goType} \`json:"${field.name}"\``;
   })
   .join('\n')}
 }
@@ -44,19 +45,26 @@ ${model.fields
 }
 
 function generateConstructor(model: ModelDef, requiredFields: any[], knownEnums: string[]): string {
-  return `func New${model.modelName}(${requiredFields
+  const params = requiredFields
     .map((field) => {
       const goType = mapTypeSpecTypeToGo(field.type, knownEnums);
-      return `${field.name} ${goType}`;
+      const goParamName = toGoParamName(field.name);
+      return `${goParamName} ${goType}`;
     })
-    .join(', ')}) *${model.modelName} {
+    .join(', ');
+
+  const assignments = requiredFields
+    .map((field) => {
+      const goFieldName = toGoFieldName(field.name);
+      const goParamName = toGoParamName(field.name);
+      return `\t\t${goFieldName}: ${goParamName},`;
+    })
+    .join('\n');
+
+  return `// New${model.modelName} creates a new ${model.modelName} instance
+func New${model.modelName}(${params}) *${model.modelName} {
 \treturn &${model.modelName}{
-${requiredFields
-  .map((field) => {
-    const capitalizedName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
-    return `\t\t${capitalizedName}: ${field.name},`;
-  })
-  .join('\n')}
+${assignments}
 \t}
 }
 

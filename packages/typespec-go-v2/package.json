@@ -1,0 +1,47 @@
+{
+  "name": "@typespec/go",
+  "version": "0.1.0",
+  "description": "TypeSpec emitter for Go code generation using proper TypeSpec APIs",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./testing": "./dist/testing.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "node --test dist/test/**/*.test.js",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write .",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@typespec/compiler": "^0.50.0"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^0.50.0",
+    "@typespec/http": "^0.50.0",
+    "@typespec/rest": "^0.50.0",
+    "@typespec/openapi3": "^0.50.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "lib/**/*"
+  ],
+  "keywords": [
+    "typespec",
+    "go",
+    "golang",
+    "code-generation",
+    "emitter"
+  ],
+  "author": "TypeSpec Community",
+  "license": "MIT"
+}

@@ -1,0 +1,6 @@
+{
+  "packageName": "main",
+  "generateHTTPClient": true,
+  "generateJSON": true,
+  "imports": ["context", "encoding/json", "fmt", "net/http", "time"]
+}

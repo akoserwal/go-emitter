@@ -15,13 +15,11 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "test": "npm run build && npm run test:phases",
-    "test:unit": "npm run build && node -e \"console.log('Unit tests would run here')\"",
-    "test:integration": "npm run build && node dist/cli/index.js examples/ecommerce/api.tsp tmp/test-output.go",
-    "test:phases": "npm run test:phase1 && npm run test:phase2 && npm run test:phase3",
-    "test:phase1": "node -e \"console.log('✅ Phase 1: Basic models work')\"",
-    "test:phase2": "node -e \"console.log('✅ Phase 2: Arrays, optionals, enums work')\"",
-    "test:phase3": "node -e \"console.log('✅ Phase 3: Interfaces, HTTP clients work')\"",
+    "test": "npm run build && jest",
+    "test:unit": "npm run build && jest --testPathPattern=test/unit",
+    "test:integration": "npm run build && jest --testPathPattern=test/integration",
+    "test:coverage": "npm run build && jest --coverage",
+    "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts --fix",
     "lint:check": "eslint src --ext .ts",
     "format": "prettier --write src",
@@ -61,13 +59,16 @@
     "commander": "^9.4.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
+    "jest": "^30.3.0",
     "prettier": "^3.0.0",
+    "ts-jest": "^29.4.9",
     "typescript": "^4.9.0"
   },
   "peerDependencies": {

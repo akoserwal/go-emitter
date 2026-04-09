@@ -36,7 +36,7 @@ interface UserService {
     expect(result.mainCode).toContain('type UserService interface');
     expect(result.mainCode).toContain('GetUser(ctx context.Context, id int64) (User, error)');
     expect(result.mainCode).toContain('CreateUser(ctx context.Context, user User) (User, error)');
-    expect(result.mainCode).toContain('ListUsers(ctx context.Context, ) ([]User, error)');
+    expect(result.mainCode).toContain('ListUsers(ctx context.Context) ([]User, error)');
     expect(result.mainCode).toContain('DeleteUser(ctx context.Context, id int64) error');
   });
 
@@ -83,8 +83,8 @@ union Message {
 
     expect(result.mainCode).toContain('type Message interface');
     expect(result.mainCode).toContain('IsMessage()');
-    expect(result.mainCode).toContain('func (m *TextMessage) IsMessage() {}');
-    expect(result.mainCode).toContain('func (m *ImageMessage) IsMessage() {}');
+    expect(result.mainCode).toContain('func (u *MessageTextMessage) IsMessage() bool');
+    expect(result.mainCode).toContain('func (u *MessageImageMessage) IsMessage() bool');
   });
 
   test('should handle complex real-world example', async () => {

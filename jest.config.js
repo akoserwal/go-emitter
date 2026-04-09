@@ -10,9 +10,7 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
   collectCoverageFrom: [
-    'simple-emitter.ts',
-    'cli.ts',
-    'generate-docs.ts',
+    'src/**/*.ts',
     '!dist/**',
     '!node_modules/**',
     '!examples/**',

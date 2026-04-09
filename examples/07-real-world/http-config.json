@@ -1,0 +1,6 @@
+{
+  "packageName": "ecommerce",
+  "generateHTTPClient": true,
+  "generateJSON": true,
+  "imports": []
+}

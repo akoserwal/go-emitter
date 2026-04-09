@@ -49,7 +49,7 @@ describe('Phase 1: Proof of Concept', () => {
     const emitter = new TypeSpecGoEmitter(phase1Config);
     const result = await emitter.generateFromString(typespecInput);
 
-    expect(result.mainCode).toContain('Id int64');
+    expect(result.mainCode).toContain('ID int64');
     expect(result.mainCode).toContain('Name string');
     expect(result.mainCode).toContain('Price float64');
     expect(result.mainCode).toContain('Available bool');

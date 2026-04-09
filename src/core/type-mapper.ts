@@ -4,6 +4,23 @@
  */
 
 /**
+ * Convert TypeSpec type names to Go type naming conventions
+ * Examples: paymentMethod -> PaymentMethod, creditCard -> CreditCard
+ */
+export function toGoTypeName(typeName: string): string {
+  // Handle single words
+  if (!typeName.includes('_') && !typeName.includes('-')) {
+    return typeName.charAt(0).toUpperCase() + typeName.slice(1);
+  }
+
+  // Handle snake_case and kebab-case
+  return typeName
+    .split(/[_-]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('');
+}
+
+/**
  * Convert TypeSpec field names to Go naming conventions
  * Examples: id -> ID, userId -> UserID, productId -> ProductID
  */

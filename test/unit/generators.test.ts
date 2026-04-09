@@ -45,7 +45,7 @@ describe('Go Code Generators', () => {
       const result = generateGoStruct(modelDef, [], basicConfig);
 
       expect(result).toContain('type User struct');
-      expect(result).toContain('Id int64 `json:"id"`');
+      expect(result).toContain('ID int64 `json:"id"`');
       expect(result).toContain('Name string `json:"name"`');
       expect(result).toContain('func NewUser(id int64, name string) *User');
     });

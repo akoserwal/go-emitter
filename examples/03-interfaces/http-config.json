@@ -1,0 +1,5 @@
+{
+  "packageName": "userservice",
+  "generateHTTPClient": true,
+  "generateJSON": true
+}

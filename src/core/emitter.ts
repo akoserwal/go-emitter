@@ -39,29 +39,37 @@ export class TypeSpecGoEmitter {
         .sort();
     }
 
-    let mainCode = this.generatePackageHeader();
+    const codeParts: string[] = [];
+    codeParts.push(this.generatePackageHeader());
 
-    // Get enum names for type resolution
-    const enumNames = parsed.enums.map((e) => e.enumName);
+    // Get enum names for type resolution (from global items only)
+    const enumNames = parsed.globalItems.enums.map((e) => e.enumName);
 
-    // Generate in order: enums, unions, interfaces, models
-    parsed.enums.forEach((enumDef) => {
-      mainCode += generateGoEnum(enumDef);
+    // Generate global items only (not namespace items)
+    parsed.globalItems.enums.forEach((enumDef) => {
+      codeParts.push(generateGoEnum(enumDef));
     });
 
-    parsed.unions.forEach((unionDef) => {
-      mainCode += generateGoUnion(unionDef);
+    parsed.globalItems.unions.forEach((unionDef) => {
+      codeParts.push(generateGoUnion(unionDef, enumNames));
     });
 
-    parsed.interfaces.forEach((interfaceDef) => {
-      mainCode += generateGoInterface(interfaceDef, enumNames, this.config);
+    parsed.globalItems.interfaces.forEach((interfaceDef) => {
+      codeParts.push(generateGoInterface(interfaceDef, enumNames, this.config));
     });
 
-    parsed.models.forEach((modelDef) => {
-      mainCode += generateGoStruct(modelDef, enumNames, this.config);
+    parsed.globalItems.models.forEach((modelDef) => {
+      codeParts.push(generateGoStruct(modelDef, enumNames, this.config));
     });
+
+    const mainCode = codeParts.join('');
 
     const result: GenerationResult = { mainCode };
+
+    // Generate namespace files
+    if (parsed.namespaces.length > 0) {
+      result.namespaceFiles = this.generateNamespaceFiles(parsed.namespaces);
+    }
 
     // Generate optional files
     if (this.config.generateTests) {
@@ -76,21 +84,22 @@ export class TypeSpecGoEmitter {
   }
 
   private generatePackageHeader(): string {
-    let code = `package ${this.config.packageName}\n\n`;
+    const parts: string[] = [];
+    parts.push(`package ${this.config.packageName}\n\n`);
 
     if (this.config.imports && this.config.imports.length > 0) {
       if (this.config.imports.length === 1) {
-        code += `import "${this.config.imports[0]}"\n\n`;
+        parts.push(`import "${this.config.imports[0]}"\n\n`);
       } else {
-        code += 'import (\n';
+        parts.push('import (\n');
         this.config.imports.forEach((imp) => {
-          code += `\t"${imp}"\n`;
+          parts.push(`\t"${imp}"\n`);
         });
-        code += ')\n\n';
+        parts.push(')\n\n');
       }
     }
 
-    return code;
+    return parts.join('');
   }
 
   private generateTests(parsed: any): string {
@@ -133,5 +142,88 @@ Auto-generated from TypeSpec definitions.
 
 See the generated Go code for usage examples.
 `;
+  }
+
+  private generateNamespaceFiles(namespaces: any[]): { [namespace: string]: string } {
+    const namespaceFiles: { [namespace: string]: string } = {};
+
+    for (const namespace of namespaces) {
+      const namespaceParts: string[] = [];
+      namespaceParts.push(this.generateNamespacePackageHeader(namespace.namespaceName));
+
+      // Get enum names for this namespace for type resolution
+      const enumNames = namespace.enums.map((e: any) => e.enumName);
+
+      // Generate in order: enums, unions, interfaces, models
+      namespace.enums.forEach((enumDef: any) => {
+        namespaceParts.push(generateGoEnum(enumDef));
+      });
+
+      namespace.unions.forEach((unionDef: any) => {
+        namespaceParts.push(generateGoUnion(unionDef, enumNames));
+      });
+
+      namespace.interfaces.forEach((interfaceDef: any) => {
+        namespaceParts.push(generateGoInterface(interfaceDef, enumNames, {
+          ...this.config,
+          packageName: namespace.namespaceName.toLowerCase()
+        }));
+      });
+
+      namespace.models.forEach((modelDef: any) => {
+        namespaceParts.push(generateGoStruct(modelDef, enumNames, this.config));
+      });
+
+      namespaceFiles[namespace.namespaceName.toLowerCase()] = namespaceParts.join('');
+    }
+
+    return namespaceFiles;
+  }
+
+  private generateNamespacePackageHeader(namespaceName: string): string {
+    const packageName = namespaceName.toLowerCase();
+    const parts: string[] = [];
+    parts.push(`package ${packageName}\n\n`);
+
+    // Determine required imports
+    const requiredImports = this.getRequiredImports();
+
+    if (requiredImports.length > 0) {
+      if (requiredImports.length === 1) {
+        parts.push(`import "${requiredImports[0]}"\n\n`);
+      } else {
+        parts.push('import (\n');
+        requiredImports.forEach((imp) => {
+          parts.push(`\t"${imp}"\n`);
+        });
+        parts.push(')\n\n');
+      }
+    }
+
+    return parts.join('');
+  }
+
+  private getRequiredImports(): string[] {
+    const imports = new Set<string>();
+
+    // Add configured imports
+    if (this.config.imports) {
+      this.config.imports.forEach(imp => imports.add(imp));
+    }
+
+    // Add imports for HTTP client generation
+    if (this.config.generateHTTPClient) {
+      imports.add('bytes');
+      imports.add('context');
+      imports.add('encoding/json');
+      imports.add('fmt');
+      imports.add('net/http');
+      imports.add('net/url');
+    }
+
+    // Always include time for timestamp fields
+    imports.add('time');
+
+    return Array.from(imports).sort();
   }
 }

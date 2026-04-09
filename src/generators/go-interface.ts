@@ -142,7 +142,16 @@ function generateHTTPMethod(serviceName: string, method: any, knownEnums: string
   }
 
   // Generate the HTTP client implementation
-  const httpCode = generateHTTPImplementation(method, httpMethod, pathParams, queryParams, headerParams, bodyParam, hasReturnValue, knownEnums);
+  const httpCode = generateHTTPImplementation(
+    method,
+    httpMethod,
+    pathParams,
+    queryParams,
+    headerParams,
+    bodyParam,
+    hasReturnValue,
+    knownEnums
+  );
 
   const paramsWithComma = params ? `, ${params}` : '';
   return `// ${capitalizedName} ${httpMethod}s ${method.name} via HTTP
@@ -180,7 +189,9 @@ function generateHTTPImplementation(
   }
 
   // Create HTTP request
-  lines.push(`\treq, err := http.NewRequestWithContext(ctx, "${httpMethod}", requestURL, ${requestBody})`);
+  lines.push(
+    `\treq, err := http.NewRequestWithContext(ctx, "${httpMethod}", requestURL, ${requestBody})`
+  );
   lines.push(`\tif err != nil {`);
   if (hasReturnValue) {
     lines.push(`\t\treturn result, err`);
@@ -194,7 +205,7 @@ function generateHTTPImplementation(
   lines.push(`\treq.Header.Set("Accept", "application/json")`);
 
   // Add custom headers
-  headerParams.forEach(header => {
+  headerParams.forEach((header) => {
     const headerName = header.decorator?.name || header.name;
     if (header.optional) {
       lines.push(`\tif ${header.name} != nil {`);
@@ -231,7 +242,7 @@ function buildURLConstruction(methodName: string, pathParams: any[]): string {
   let urlTemplate = `%s/${methodName}`;
   const formatArgs = ['c.baseURL'];
 
-  pathParams.forEach(param => {
+  pathParams.forEach((param) => {
     urlTemplate += `/%v`;
     formatArgs.push(param.name);
   });
@@ -243,7 +254,7 @@ function buildQueryParameters(queryParams: any[]): string {
   const lines: string[] = [];
   lines.push(`\tqueryParams := url.Values{}`);
 
-  queryParams.forEach(param => {
+  queryParams.forEach((param) => {
     const queryName = param.decorator?.name || param.name;
     const isOptional = param.optional;
     const isArrayType = param.type.endsWith('[]') || param.type.includes('[]');
@@ -312,10 +323,14 @@ function buildResponseHandling(httpMethod: string, hasReturnValue: boolean): str
 
 function getExpectedStatusCode(httpMethod: string): string {
   switch (httpMethod) {
-    case 'POST': return 'http.StatusCreated';
-    case 'DELETE': return 'http.StatusNoContent';
+    case 'POST':
+      return 'http.StatusCreated';
+    case 'DELETE':
+      return 'http.StatusNoContent';
     case 'PUT':
-    case 'PATCH': return 'http.StatusOK';
-    default: return 'http.StatusOK';
+    case 'PATCH':
+      return 'http.StatusOK';
+    default:
+      return 'http.StatusOK';
   }
 }

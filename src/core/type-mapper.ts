@@ -16,7 +16,7 @@ export function toGoTypeName(typeName: string): string {
   // Handle snake_case and kebab-case
   return typeName
     .split(/[_-]/)
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
 }
 

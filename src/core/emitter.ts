@@ -164,10 +164,12 @@ See the generated Go code for usage examples.
       });
 
       namespace.interfaces.forEach((interfaceDef: any) => {
-        namespaceParts.push(generateGoInterface(interfaceDef, enumNames, {
-          ...this.config,
-          packageName: namespace.namespaceName.toLowerCase()
-        }));
+        namespaceParts.push(
+          generateGoInterface(interfaceDef, enumNames, {
+            ...this.config,
+            packageName: namespace.namespaceName.toLowerCase(),
+          })
+        );
       });
 
       namespace.models.forEach((modelDef: any) => {
@@ -208,7 +210,7 @@ See the generated Go code for usage examples.
 
     // Add configured imports
     if (this.config.imports) {
-      this.config.imports.forEach(imp => imports.add(imp));
+      this.config.imports.forEach((imp) => imports.add(imp));
     }
 
     // Add imports for HTTP client generation

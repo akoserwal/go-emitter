@@ -25,8 +25,8 @@ export function parseTypeSpecFile(content: string): ParsedTypeSpec {
       models: [],
       enums: [],
       interfaces: [],
-      unions: []
-    }
+      unions: [],
+    },
   };
 
   // First, parse namespaces
@@ -40,10 +40,13 @@ export function parseTypeSpecFile(content: string): ParsedTypeSpec {
   result.globalItems.models = parseModels(globalContent);
 
   // For backward compatibility, also populate the root arrays with all items
-  result.enums = [...result.globalItems.enums, ...result.namespaces.flatMap(ns => ns.enums)];
-  result.unions = [...result.globalItems.unions, ...result.namespaces.flatMap(ns => ns.unions)];
-  result.interfaces = [...result.globalItems.interfaces, ...result.namespaces.flatMap(ns => ns.interfaces)];
-  result.models = [...result.globalItems.models, ...result.namespaces.flatMap(ns => ns.models)];
+  result.enums = [...result.globalItems.enums, ...result.namespaces.flatMap((ns) => ns.enums)];
+  result.unions = [...result.globalItems.unions, ...result.namespaces.flatMap((ns) => ns.unions)];
+  result.interfaces = [
+    ...result.globalItems.interfaces,
+    ...result.namespaces.flatMap((ns) => ns.interfaces),
+  ];
+  result.models = [...result.globalItems.models, ...result.namespaces.flatMap((ns) => ns.models)];
 
   return result;
 }
@@ -117,7 +120,9 @@ function parseMethods(content: string): MethodDef[] {
   const methodBlocks = extractMethodBlocks(content);
 
   for (const block of methodBlocks) {
-    const methodMatch = block.match(/^((?:@\w+(?:\([^)]*\))?\s*)*)\s*(\w+)\s*\(([\s\S]*?)\):\s*(\w+(?:\[\])?)\s*;?\s*$/);
+    const methodMatch = block.match(
+      /^((?:@\w+(?:\([^)]*\))?\s*)*)\s*(\w+)\s*\(([\s\S]*?)\):\s*(\w+(?:\[\])?)\s*;?\s*$/
+    );
     if (methodMatch) {
       const decoratorsString = methodMatch[1].trim();
       const name = methodMatch[2];
@@ -136,7 +141,10 @@ function parseMethods(content: string): MethodDef[] {
 
 function extractMethodBlocks(content: string): string[] {
   const blocks: string[] = [];
-  const lines = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  const lines = content
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
 
   let currentBlock = '';
   let inMethod = false;
@@ -198,7 +206,8 @@ function parseParams(paramsString: string) {
         const type = paramMatch[3];
 
         // Extract parameter name and check if optional
-        const isOptional = nameWithOptional.includes('?') || trimmed.includes('?:') || trimmed.endsWith('?');
+        const isOptional =
+          nameWithOptional.includes('?') || trimmed.includes('?:') || trimmed.endsWith('?');
         const name = nameWithOptional.replace('?', '');
 
         const decorator = parseParameterDecorator(decoratorString);
@@ -303,7 +312,7 @@ function parseParameterDecorator(decoratorString: string): DecoratorInfo | undef
   if (decoratorMatch) {
     return {
       type: decoratorMatch[1] as 'header' | 'query' | 'path' | 'body',
-      name: decoratorMatch[2] // Custom name if provided
+      name: decoratorMatch[2], // Custom name if provided
     };
   }
 

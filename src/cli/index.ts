@@ -48,7 +48,9 @@ function validatePath(userPath: string, purpose: 'input' | 'output' | 'config'):
 
   // Check if resolved path is within current working directory or subdirectories
   if (!resolved.startsWith(cwd)) {
-    throw new Error(`Security error: ${purpose} path '${userPath}' attempts to access files outside the current directory. Resolved to: ${resolved}`);
+    throw new Error(
+      `Security error: ${purpose} path '${userPath}' attempts to access files outside the current directory. Resolved to: ${resolved}`
+    );
   }
 
   // Additional validation for file extensions
@@ -221,7 +223,9 @@ async function main() {
       // For documentation, we need a more flexible validation since it's not a .go file
       const validatedDocFile = path.resolve(docFile);
       if (!validatedDocFile.startsWith(process.cwd())) {
-        throw new Error(`Security error: Documentation path attempts to access files outside current directory`);
+        throw new Error(
+          `Security error: Documentation path attempts to access files outside current directory`
+        );
       }
       fs.writeFileSync(validatedDocFile, result.documentation);
       console.log(`Generated documentation -> ${docFile}`);
@@ -245,7 +249,9 @@ async function main() {
   } catch (error) {
     if (error instanceof Error && error.message.startsWith('Security error:')) {
       console.error('🛡️  Security Error:', error.message);
-      console.error('Tip: Ensure file paths are within the current directory and use relative paths.');
+      console.error(
+        'Tip: Ensure file paths are within the current directory and use relative paths.'
+      );
     } else {
       console.error('❌ Generation failed:', error);
     }

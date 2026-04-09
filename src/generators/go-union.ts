@@ -6,7 +6,7 @@ export function generateGoUnion(union: UnionDef, knownEnums: string[]): string {
   const goUnionName = toGoTypeName(unionName);
 
   // Check if this is a discriminated union (contains colons)
-  const isDiscriminated = types.some(type => type.includes(':'));
+  const isDiscriminated = types.some((type) => type.includes(':'));
 
   if (isDiscriminated) {
     return generateDiscriminatedUnion(union, knownEnums);
@@ -32,7 +32,7 @@ function generateDiscriminatedUnion(union: UnionDef, knownEnums: string[]): stri
 
   // Generate concrete implementations for each discriminated case
   for (const type of types) {
-    const parts = type.split(':').map(p => p.trim());
+    const parts = type.split(':').map((p) => p.trim());
     if (parts.length === 2) {
       const discriminator = parts[0];
       const typeName = parts[1];
@@ -101,7 +101,7 @@ function generateSimpleUnion(union: UnionDef, knownEnums: string[]): string {
       const wrapperName = `${goUnionName}${toGoTypeName(cleanType)}`;
 
       // Map TypeSpec types to Go types
-      let goType = mapTypeSpecToGo(cleanType);
+      const goType = mapTypeSpecToGo(cleanType);
 
       result += `// ${wrapperName} implements ${goUnionName}\n`;
       result += `type ${wrapperName} struct {\n`;
